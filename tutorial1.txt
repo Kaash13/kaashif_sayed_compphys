@@ -1,9 +1,0 @@
-Tutorial 1
-
-1) ls-ltr
-
-2) head -25 filename.txt
-   sed -n '16,25p' filename.txt
-
-3)man python
-
