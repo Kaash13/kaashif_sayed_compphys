@@ -1,0 +1,22 @@
+Tutorial 1
+Q5 
+>>> from math import pi
+>>> import numpy as np
+>>> x=np.arange(0,pi/2,pi/16)
+>>> x
+array([ 0.        ,  0.19634954,  0.39269908,  0.58904862,  0.78539816,
+        0.9817477 ,  1.17809725,  1.37444679])
+>>> x[0]
+0.0
+>>> x[-1]
+1.3744467859455345
+
+for different points i.e 10,30,100,300,1000:
+
+>>> import numpy as np
+>>> x1=np.arange(0,(np.pi/2),((np.pi/2))/10)
+>>> x2=np.arange(0,(np.pi/2),((np.pi/2))/30)
+>>> x3=np.arange(0,(np.pi/2),((np.pi/2))/100)
+>>> x4=np.arange(0,(np.pi/2),((np.pi/2))/300)
+>>> x5=np.arange(0,(np.pi/2),((np.pi/2))/1000)
+
