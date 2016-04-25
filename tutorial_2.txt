@@ -1,0 +1,161 @@
+#tutorial 2
+#part a
+#Question 1 done in tutorial 1
+
+#Question 2
+#integral of cos(x)
+
+import numpy as np
+points=[10,30,100,300,1000]
+x0=0
+xn=np.pi/2
+for delta in points:
+     x=(np.linspace(x0,xn,delta))
+     y=np.cos(x)
+     tot=y.sum()*(x[1]-x[0])
+     print 'integral is ' + repr (tot) + 'and delta is '+ repr (delta)
+#the error value becomes smaller as the number of points used becomes larger
+
+#Question 3
+#integrating function using Simpson's rule
+
+import numpy as np
+n=[10,30,100,300,1000]
+x0=0
+x1=np.pi/2
+I=np.zeros(5)
+for i in range(5):
+    dx=1.0/(n[i]+1)
+    x=x1*np.arange(x0/x1,1+dx/2,dx)
+    y=np.cos(x)
+    s=y[0]+y[-1]
+    for j in range(1,len(x)-1,1):
+        if j%2==0: #even points
+            s+=2*y[j]
+        if j%2!=0:  #odd points
+            s+=4*y[j]
+    I[i]=s*dx*x1/3
+    print n
+    print I
+#Using 11 points in Simpson's rule gives the value 1.00000339
+#231530 points will be needed if the simple method of integration is used.
+
+#Question 4
+#plotting error function
+
+import numpy as np
+import matplotlib.pyplot as plt
+points=[10,30,100,300,1000]
+x0=0
+x1=np.pi/2
+In=np.zeros(5)  #summing using the normal simple method
+Is=np.zeros(5)  #summing using Simpsons rule
+for i in range(len(n)):
+    delta=1.0/(points[i]+1)
+    x=x1*np.arange(x0/x1,1+delta/2,delta)
+    y=np.cos(x)
+    In[i]=abs(sum(y)*delta*x1-1)
+    s=y[0]+y[-1]
+    for j in range(1,len(x)-1,1):
+        if j%2==0:
+            s+=2*y[j]
+        if j%2!=0:
+            s+=4*y[j]
+    Is[i]=abs(s*delta*x1/3-1)
+    print points
+    print In
+    print Is
+plt.plot(points,In,label='Normal')
+plt.plot(points,Is,label='Simpson')
+plt.show()
+
+
+#part b
+#Question 1
+
+import numpy as np
+from matplotlib import pyplot as plt
+from numpy.fft import fft,ifft
+
+def Shift(y,n=0):
+    y1=np.zeros(len(y))
+    y1[n]=1     
+    y1_f=fft(y1)
+    y_f=fft(y)
+    return np.real(ifft(y1_f*y_f))
+
+x=np.arange(-10,10,0.05)
+y=np.exp(-0.5*(x/1.5)**2)
+ys=Shift(y,len(y)/2)
+plt.plot(x,y,label='Normal')
+plt.plot(x,ys,label='Shifted')
+plt.show()
+
+#Question 2
+
+import numpy as np
+from matplotlib import pyplot as plt
+from numpy.fft import fft,ifft
+
+def Correlate(f,g):
+    f1=fft(f)
+    g1=np.conj(fft(g))
+    return np.real(ifft(f1*g1))
+
+x=np.arange(-10,10,0.05)
+y=np.exp(-0.5*(x/1.5)**2)
+yc=Correlate(y,y)
+plt.plot(x,yc)
+plt.show()
+
+#QUESTION 3
+
+import numpy as np
+from matplotlib import pyplot as plt
+from numpy.fft import fft,ifft
+
+def Correlate(f,g):
+    f1=fft(f)
+    g1=np.conj(fft(g))
+    return np.real(ifft(f1*g1))
+
+def Shift(y,n=0):
+    y1=np.zeros(len(y))
+    y1[n]=1
+    y1_f=fft(y1)
+    y_f=fft(y)
+    return np.real(ifft(y1_f*y_f))
+
+x=np.arange(-10,10,0.05)
+y=np.exp(-0.5*(x/1.5)**2)
+ys=Shift(y,len(y)/5)
+yc1=Correlate(y,y)
+yc2=Correlate(ys,ys)
+plt.plot(x,yc1,'r',label='Correlated')
+plt.plot(x,yc2,'b--',label='Shifted and Correlated')
+plt.show()
+
+#QUESTION 4
+
+import numpy as np
+from matplotlib import pyplot as plt
+from numpy.fft import fft,ifft
+
+def Conv(x,y):
+    x1=np.zeros(len(x)*2)
+    y1=np.zeros(len(y)*2)
+    x1[0:len(x)]=x
+    y1[0:len(y)]=y
+    xf=fft(x1)
+    yf=fft(y1)
+    z=np.real(ifft(yf*xf))
+    return z[0:len(x)]
+
+x=np.arange(-10,10,0.05)
+y=np.exp(-0.5*(x/1.5)**2)
+y=y/np.sum(y)      #this will normalise the gaussian
+yc=Conv(y,y)
+plt.plot(x,y)
+plt.plot(x,yc)
+plt.show()
+
