@@ -1,0 +1,24 @@
+import numpy as np
+
+class Nbody:
+    def __init__(self,n=10):
+        self.x=np.random.randn(n)
+        self.y=np.random.randn(n)
+        self.m=np.ones(n)
+        self.vx=np.zeros(n)
+        self.vy=np.zeros(n)
+        self.opts={}
+        self.opts['n']=n
+        self.opts['G']=6.67e-11
+      
+    def__PotentialEnergy__(self,opts['n']):
+    	pot=np.zeros(self.opts['n'])
+        for i in range(0,self.opts['n']):
+            dx=self.x[i]-self.x
+            dy=self.y[i]-self.y
+            r=np.sqrt(x**2+y**2)
+    	for i in range(len(self.m)):
+        	for j in range(len(self.m)):
+            		if (i != j):
+                		Pot[i] += -self.m[i]*self.m[j]/r 
+    return 0.5*Pot.sum()
