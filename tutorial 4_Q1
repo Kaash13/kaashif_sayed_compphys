@@ -1,0 +1,24 @@
+import numpy as np
+from matplotlib import pylab as plt
+
+def get_trig(p=49,o=5):
+    xv=np.arange(0,p)/(0.0+p)*2*np.pi
+    m=np.zeros((p,2*o-1))
+    m[:,0]=1.0
+    for j in range(1,o):
+        m[:,2*j-1]=np.cos(j*xv)
+        m[:,2*j]=-np.sin(j*xv)
+    return np.matrix(m)
+
+if __name__=='__main__':
+    n=50
+    o=5
+    x=np.random.randn(n)
+    m=get_trig(n,o)
+    xft=np.fft.fft(x)
+    
+    x=np.matrix(x).transpose()
+    fit=np.linalg.inv(m.transpose()*m)*(m.transpose()*x)
+    err4=np.complex(fit[5],fit[6])-xft[4]/(0.5*n)
+    print 'error in 4th term is ' + repr(err4)
+    
