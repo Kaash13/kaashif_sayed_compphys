@@ -1,0 +1,74 @@
+import numpy as np
+from matplotlib import pyplot as plt
+class N_Part:
+    def __init__(self,n=2000,soft=0.1,dt=0.1):
+        self.x=np.random.randn(n)
+        self.y=np.random.randn(n)
+        self.m=np.ones(n)*(1.0/n)
+        self.vx=np.zeros(n)
+        self.vy=np.zeros(n)
+        self.opts={}
+        self.opts['n']=n
+	self.opts['dt']=dt
+        self.opts['G']=1.0
+        self.opts['soft']=soft
+
+    def forces(self):
+        pot=0
+        self.fx=np.zeros(self.opts['n'])
+        self.fy=np.zeros(self.opts['n'])
+
+        for i in range(0,self.opts['n']-1):
+            dx=self.x[i]-self.x[i+1:]	#particle distance in x-direction
+            dy=self.y[i]-self.y[i+1:]	#particle distance in y-direction
+            rsqr=(dx*dx+dy*dy)
+	    fsoft=self.opts['soft']
+
+            if rsqr<fsoft:
+	    	rsqr=fsoft
+
+            r=np.sqrt(rsqr)
+            r3i=1.0/(r*rsqr)
+            self.fx[i]-=np.sum(dx*r3i*self.m[i+1:])
+            self.fy[i]-=np.sum(dy*r3i*self.m[i+1:])
+            self.fx[i+1:]+=dx*r3i*self.m[i]
+            self.fy[i+1:]+=dy*r3i*self.m[i]
+            pot=pot+np.sum(self.opts['G']*self.m[i]*self.m[i+1:]*1.0/r)
+        self.fx=self.fx*self.opts['G']
+        self.fy=self.fy*self.opts['G']
+        return pot   
+   
+    def potential(self):
+        pot=np.zeros(self.opts['n'])
+        for i in range(0,self.opts['n']):
+            dx=self.x[i]-self.x
+            dy=self.y[i]-self.y
+            r=np.sqrt(dx*dx+dy*dy)
+            ri=1.0/r
+            ri[i]=0 
+            pot[i]=self.m[i]+np.sum(self.opts['G']*self.m[i]*self.m*ri)
+        return pot
+
+    def update_pos(self,self.opts['dt']):
+        self.x+=self.vx*self.opts['dt']
+        self.y+=self.vy*self.opts['dt']
+        pot=self.forces()
+        self.vx+=self.fx*self.opts['dt']
+        self.vy+=self.fy*self.opts['dt']
+        return pot
+            
+
+if __name__=='__main__':
+    particles=N_Part()
+    print "potential energy is " 
+    plt.ion()
+    poten=np.zeros(500)
+    kinetic=np.zeros(500)
+    for j in range(0,500):
+        pot=particles.update_pos(0.05)        
+        plt.plot(particles.x,particles.y,'b*')
+        plt.draw()
+        kin=np.sum(part.m*(particles.vx**2+particles.vy**2))
+        print 'total energy is ' + repr([pot,kin,kin-2.0*pot])
+        poten[j]=pot
+        kinetic[j]=kin
